@@ -1,0 +1,19 @@
+.home-content {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  min-height: 100%;
+}
+
+.home-files-minor,
+.home-files-major {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  gap: 32px;
+}
+
+.home-files-minor > *,
+.home-files-major > * {
+  flex: 1;
+}

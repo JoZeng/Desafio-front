@@ -1,0 +1,49 @@
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Nunito:wght@400;600;700&display=swap");
+@font-face {
+  font-family: Montserrat;
+  src: url("../src/fonts/Montserrat/Montserrat-VariableFont_wght.ttf");
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  border: none;
+  list-style: none;
+}
+
+html,
+body {
+  height: 100%;
+  font-size: 62.5%;
+  font-family: "Nunito", sans-serif;
+  font-style: normal;
+  scroll-behavior: smooth;
+  overflow-x: hidden;
+}
+
+body {
+  font-size: 1.6rem;
+}
+
+button {
+  all: unset;
+  cursor: pointer;
+}
+
+.close-button {
+  cursor: pointer;
+}
+
+hr {
+  border: none;
+  border-top: 1px solid #ccc;
+  width: 100%;
+  margin: 10px 0;
+}
+
+.input-errors {
+  height: 16px;
+  color: #e70000;
+  font-weight: 400;
+}

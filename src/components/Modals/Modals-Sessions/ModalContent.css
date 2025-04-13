@@ -1,0 +1,202 @@
+.modal-background {
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(145, 154, 150, 0.3);
+  backdrop-filter: blur(5px);
+}
+
+.modal-content-home-edit {
+  width: 491px;
+  display: flex;
+  flex-direction: column;
+  background-color: #ffffff;
+  border-radius: 30px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.modal-content-client-add {
+  width: 600px;
+  display: flex;
+  flex-direction: column;
+  background-color: #ffffff;
+  border-radius: 30px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.modal-content-add-charges {
+  width: 600px;
+  display: flex;
+  flex-direction: column;
+  background-color: #ffffff;
+  border-radius: 30px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.modal-content-padding {
+  width: 100%;
+  padding: 40px 56px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.modal-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  font-family: Montserrat;
+  font-weight: 700;
+  font-size: 24px;
+  padding-bottom: 20px;
+}
+
+.modal-content-image-client-add {
+  display: flex;
+  position: relative;
+  left: 120px;
+  bottom: 12px;
+}
+.modal-content-image-home-edit {
+  display: flex;
+  position: relative;
+  left: 70px;
+  bottom: 12px;
+}
+
+.modal-content-image-add-charges {
+  display: flex;
+  position: relative;
+  left: 100px;
+  bottom: 12px;
+}
+
+.modal-content-padding form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.inputs-modal-edituser {
+  display: flex;
+  height: 88px;
+  width: 100%;
+  padding-bottom: 8px;
+  flex-direction: column;
+}
+
+.inputs-minors-modal-edituser {
+  display: flex;
+  height: 88px;
+  width: 100%;
+  padding-bottom: 8px;
+  gap: 24px;
+}
+
+.input-minor-modal-edituser {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.edituser-form {
+  display: flex;
+}
+
+.edituser-form label {
+  font-family: "Nunito", sans-serif;
+  font-weight: 600;
+  font-size: 14px;
+  padding-bottom: 6px;
+}
+
+.edituser-form input,
+.input-minor-modal-edituser-city input,
+.input-minor-modal-edituser-uf input {
+  font-family: "Inter";
+  height: 44px;
+  padding-left: 14px;
+  border-radius: 10px;
+  border: 1px solid #dedee9;
+}
+
+.modal-content-button {
+  display: flex;
+  justify-content: center;
+  padding-top: 10px;
+}
+
+.modal-content-button button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 33px;
+  width: 160px;
+  background-color: #da0175;
+  border-radius: 10px;
+  color: #f8f8f9;
+  font-weight: 400;
+  font-size: 18px;
+}
+
+.inputs-minors-modal-edituser-second {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 20px;
+}
+
+.input-minor-modal-edituser-city input {
+  width: 135%;
+}
+
+.input-minor-modal-edituser-uf input {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 80px;
+}
+
+.inputs-modal-radios {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  gap: 8px;
+  align-items: start;
+  padding-bottom: 20px;
+}
+
+.inputs-modal-form-radios {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-weight: 400;
+  font-size: 16px;
+}
+
+.inputs-modal-radios {
+  display: flex;
+  gap: 8px;
+}
+
+.inputs-modal-radio {
+  display: flex;
+  padding: 12px 16px;
+  gap: 8px;
+  align-items: center;
+  width: 100%;
+  background-color: #f0f0f5;
+  border-radius: 10px;
+}
+.inputs-modal-radio input {
+  height: 24px;
+  width: 24px;
+}

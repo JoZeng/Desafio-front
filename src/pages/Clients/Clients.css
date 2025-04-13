@@ -1,0 +1,13 @@
+.clients-page {
+  display: flex;
+  height: 100%;
+  width: 100vw;
+  background-color: #f8f8f9;
+}
+
+.clients-page-content {
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
+  padding: 20px 140px 60px 82px;
+}
