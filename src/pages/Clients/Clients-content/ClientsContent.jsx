@@ -1,8 +1,8 @@
-import { useClients } from "../../../context/clientsContext.jsx";
-import "./Clients-content.css";
+import { useClients } from "../../../contexts/clients/ClientsContext";
+import "./clients-content.css";
 import { useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { setItem } from "../../../utils/storage";
+import { setItem } from "../../../utils/storage.jsx";
 import clientsimage from "../../../assets/clients.svg";
 import filterimage from "../../../assets/filter.svg";
 import addcharges from "../../../assets/iconCharges.svg";

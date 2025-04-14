@@ -1,5 +1,5 @@
 import { useNavigate, useLocation } from "react-router-dom";
-import "./SideBar.css";
+import "./sidebar.css";
 import Home from "../../assets/home.svg";
 import Clients from "../../assets/clients.svg";
 import Charges from "../../assets/charges.svg";

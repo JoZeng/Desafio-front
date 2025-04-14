@@ -1,9 +1,9 @@
-import "./Home.css";
+import "./home.css";
 import { useState } from "react";
-import SideBar from "../../components/SideBar/SideBar";
-import Header from "../../components/Header/Header";
-import HomeContent from "./Home-content/Home-content";
-import ModalHomeUserEdit from "../../components/Modals/Modals-Sessions/Modal-Home-UserEdit/Modal-Home-UserEdit";
+import SideBar from "../../components/sidebar/SideBar";
+import Header from "../../components/header/Header";
+import HomeContent from "../home/home-content/HomeContent";
+import ModalHomeUserEdit from "../../components/modals/modals-sessions/modal-home-user-edit/ModalHomeUserEdit";
 
 function Home() {
   const [openModalMenuEdit, setOpenModalMenuEdit] = useState(false);

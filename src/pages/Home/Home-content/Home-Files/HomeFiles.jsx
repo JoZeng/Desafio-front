@@ -1,4 +1,4 @@
-import FilesCharges from "./Files-Charges/Files-Charges";
+import FilesCharges from "./files-charges/FilesCharges";
 
 function HomeFiles({
   title,

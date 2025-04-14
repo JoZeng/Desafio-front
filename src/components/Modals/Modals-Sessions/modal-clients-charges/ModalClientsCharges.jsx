@@ -94,7 +94,6 @@ export default function ModalClientsCharges({
               required: "Este campo deve ser preenchido",
             }),
           }}
-          twelfthError={""}
           thirteenthLabel={"Vencimento*"}
           thirteenthClassName={errors.expirationdate ? "label-errors" : null}
           thirteenthPlaceholder={"Digite o Status"}
@@ -104,7 +103,6 @@ export default function ModalClientsCharges({
               required: "Este campo deve ser preenchido",
             }),
           }}
-          thirteenthError={""}
           fourteenthLabel={"Valor*"}
           fourteenthClassName={errors.value ? "label-errors" : null}
           fourteenthPlaceholder={"Digite o valor"}
@@ -126,8 +124,8 @@ export default function ModalClientsCharges({
           secondRadioInputProps={{
             ...register("status", {}),
           }}
-          secondRadioName={"status"}
           secondRadioType={"radio"}
+          secondRadioName={"status"}
           secondRadioValue={"pendente"}
           secondRadiotext={"Cobrança Pendente"}
           buttonText={"Aplicar"}

@@ -1,4 +1,4 @@
-import "./Home-Charges.css";
+import "./home-charges.css";
 import IconPaid from "../../../../assets/Icon-paga.png";
 import IconOutOfDate from "../../../../assets/Icon-vencida.png";
 import IconPlanned from "../../../../assets/Icon-prevista.png";

@@ -1,9 +1,9 @@
-import "./Home-Content.css";
+import "./home-content.css";
 import { useEffect, useState } from "react";
 import { getItem } from "../../../utils/storage";
 import api from "../../../services/api";
-import HomeCharges from "./Home-Charges/Home-Charges";
-import HomeFiles from "./Home-Files/Home-Files";
+import HomeCharges from "./home-charges/HomeCharges";
+import HomeFiles from "./home-files/HomeFiles";
 
 function HomeContent() {
   const [chargesPaid, setChargesPaid] = useState(0);

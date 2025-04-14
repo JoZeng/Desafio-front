@@ -1,4 +1,4 @@
-import "./LeftSection.css";
+import "./left-section.css";
 import { useLocation } from "react-router-dom";
 
 function LeftSection({

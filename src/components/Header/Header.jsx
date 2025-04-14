@@ -1,8 +1,8 @@
+import "./header.css";
 import { useState } from "react";
 import { useLocation } from "react-router-dom";
-import "../Header/Header.css";
 import Icondown from "../../assets/Icon-down.png";
-import ModalHomeHeader from "../Modals/Modal-Home-Header/Modal-Home-Header";
+import ModalHomeHeader from "../modals/modal-home-header/ModalHomeHeader";
 import { getItem } from "../../utils/storage";
 
 function Header({ text, text2, handleModalUserEdit }) {

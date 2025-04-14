@@ -1,12 +1,12 @@
 import { useState } from "react";
-import "./Clients.css";
-import SideBar from "../../components/SideBar/SideBar";
-import Header from "../../components/Header/Header";
-import ClientsContent from "./Clients-content/Clients-content";
-import ModalHomeUserEdit from "../../components/Modals/Modals-Sessions/Modal-Home-UserEdit/Modal-Home-UserEdit";
-import ModalClientsAdd from "../../components/Modals/Modals-Sessions/Modal-Clients-Add/Modal-Clients-Add";
-import ModalClientsCharges from "../../components/Modals/Modals-Sessions/Modal-Clients-Charges/Modal-Clients-Charges";
-import { ClientsProvider } from "../../context/clientsContext";
+import "./clients.css";
+import SideBar from "../../components/sidebar/SideBar";
+import Header from "../../components/header/Header";
+import ClientsContent from "./clients-content/ClientsContent/";
+import ModalHomeUserEdit from "../../components/modals/modals-sessions/modal-home-user-edit/ModalHomeUserEdit";
+import ModalClientsAdd from "../../components/modals/modals-sessions/modal-clients-add/ModalClientsAdd";
+import ModalClientsCharges from "../../components/modals/modals-sessions/modal-clients-charges/ModalClientsCharges";
+import { ClientsProvider } from "../../contexts/clients/ClientsContext";
 
 export default function Clients() {
   const [openModalMenuEdit, setOpenModalMenuEdit] = useState(false);
@@ -54,13 +54,13 @@ export default function Clients() {
             openModal={openModalAddCharges}
             closedModal={setOpenModalAddCharges}
             closedModalButton={closeModalAddCharges}
-            onUpdate={handleUpdateData} // Passando a função para o modal
+            onUpdate={handleUpdateData}
           />
 
           <ClientsContent
             openModalAddClient={handleModalClientsAdd}
             openModalAddCharges={handleModalAddCharges}
-            refreshTrigger={refreshData} // Passando o trigger de atualização
+            refreshTrigger={handleUpdateData}
           />
         </div>
       </ClientsProvider>

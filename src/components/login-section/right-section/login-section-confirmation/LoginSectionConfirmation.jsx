@@ -1,4 +1,4 @@
-import "./LoginSection-Confirmation.css";
+import "./login-section-confirmation.css";
 
 function LoginSectionConfirmation({
   buttonText,

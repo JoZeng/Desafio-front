@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
-import LoginSectionConfirmation from "../../components/LoginSection/RightSection/LoginSection-Confirmation/LoginSection-Confirmation";
-import LeftSection from "../../components/LoginSection/LeftSection/LeftSection";
+import LoginSectionConfirmation from "../../components/login-section/right-section/login-section-confirmation/LoginSectionConfirmation";
+import LeftSection from "../../components/login-section/left-section/LeftSection";
 import Circlechecked from "../../assets/circlechecked.svg";
 import Greenline from "../../assets/greenline.png";
 import Iconconfirm from "../../assets/icon-confirm.svg";

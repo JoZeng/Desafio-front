@@ -1,4 +1,4 @@
-import "./Routes.css";
+import "./routes.css";
 import {
   BrowserRouter,
   Navigate,
@@ -7,13 +7,13 @@ import {
   Routes,
 } from "react-router-dom";
 import { getItem } from "../utils/storage/";
-import SignIn from "../pages/SignIn/SignIn";
-import SignUpPassword from "../pages/SignUp-Password/SignUp-Password";
-import SignUpConfirmation from "../pages/SignUp-Confirmation/SignUp-Confirmation";
+import SignIn from "../pages/signin/SignIn";
+import SignUpPassword from "../pages/signup-password/SignUpPassword";
+import SignUpConfirmation from "../pages/signup-confirmation/SignUpConfirmation";
 import LogIn from "../pages/LogIn/LogIn";
-import Home from "../pages//Home/Home";
+import Home from "../pages/home/Home";
 import Clients from "../pages/Clients/Clients";
-import ClientDetails from "../pages/Clients/Clients-content/Client-content-details/Client-content-details";
+import ClientDetails from "../pages/Clients/Clients-content/Client-content-details/ClientDetails";
 
 function App() {
   function ProtectedRoutes({ redirectTo }) {

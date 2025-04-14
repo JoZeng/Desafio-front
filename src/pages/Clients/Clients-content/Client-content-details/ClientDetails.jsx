@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { getItem } from "../../../../utils/storage";
-import "./Client-content-details.css";
+import "./client-content-details.css";
 import api from "../../../../services/api";
-import Header from "../../../../components/Header/Header";
-import SideBar from "../../../../components/SideBar/SideBar";
+import Header from "../../../../components/header/Header";
+import SideBar from "../../../../components/sidebar/SideBar";
 import ModalClientsEdit from "../../../../components/Modals/Modals-Sessions/Modal-Clients-Edit/Modal-Clients-Edit";
 import clientsimage from "../../../../assets/clients.svg";
 
@@ -131,7 +131,6 @@ export default function ClientDetails() {
               </div>
             </div>
 
-            {/* Exibindo as cobranças do cliente */}
             <div className="client-details-charges">
               <h3>Cobranças do Cliente</h3>
               {cobrancas.length === 0 ? (

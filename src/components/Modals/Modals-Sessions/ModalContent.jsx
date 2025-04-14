@@ -1,4 +1,4 @@
-import "./ModalContent.css";
+import "./modal-content.css";
 import ButtonClose from "../../../assets/button-close.svg";
 
 export default function ModalContent({

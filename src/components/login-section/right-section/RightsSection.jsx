@@ -1,4 +1,4 @@
-import "./RightSection.css";
+import "./right-section.css";
 
 function RightSection({
   title,

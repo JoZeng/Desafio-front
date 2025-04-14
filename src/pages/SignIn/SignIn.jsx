@@ -1,12 +1,12 @@
-import "./SignIn.css";
+import "./signin.css";
 import { setItem } from "../../utils/storage";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import api from "../../services/api";
-import LeftSection from "../../components/LoginSection/LeftSection/LeftSection";
-import RightSection from "../../components/LoginSection/RightSection/RightsSection";
+import LeftSection from "../../components/login-section/left-section/LeftSection";
+import RightSection from "../../components/login-section/right-section/RightsSection";
 import Circlegreen from "../../assets/circlegreen.svg";
 import Circlewhite from "../../assets/circlewhite.svg";
 import Greenline from "../../assets/greenline.png";

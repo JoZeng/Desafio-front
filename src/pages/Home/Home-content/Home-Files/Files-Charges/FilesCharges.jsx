@@ -1,4 +1,4 @@
-import "./Files-Charges.css";
+import "./files-charges.css";
 
 export default function FilesCharges({
   title,

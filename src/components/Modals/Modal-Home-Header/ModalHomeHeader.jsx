@@ -1,4 +1,4 @@
-import "./Modal-Home-Header.css";
+import "./modal-home-header.css";
 import { useNavigate } from "react-router-dom";
 import BotaoEditar from "../../../assets/button-editar.svg";
 import BotaoLogout from "../../../assets/button-logout.svg";
@@ -11,7 +11,6 @@ export default function ModalHomeHeader({
 }) {
   const navigate = useNavigate();
 
-  
   function handleLogout() {
     clear();
     navigate("/");

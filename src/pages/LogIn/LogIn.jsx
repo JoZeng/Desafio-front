@@ -4,8 +4,8 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import api from "../../services/api";
-import LeftSection from "../../components/LoginSection/LeftSection/LeftSection";
-import RightSection from "../../components/LoginSection/RightSection/RightsSection";
+import LeftSection from "../../components/login-section/left-section/LeftSection";
+import RightSection from "../../components/login-section/right-section/RightsSection";
 import greenline3 from "../../assets/greenlinehorizontal3.svg";
 import { useState } from "react";
 
