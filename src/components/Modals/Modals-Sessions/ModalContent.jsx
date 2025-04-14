@@ -1,4 +1,3 @@
-import { useState } from "react";
 import "./ModalContent.css";
 import ButtonClose from "../../../assets/button-close.svg";
 
@@ -124,20 +123,6 @@ export default function ModalContent({
   secondRadioValue,
   secondRadiotext,
 }) {
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const handleInternalSubmit = async (e) => {
-    e.preventDefault();
-    if (isSubmitting) return;
-
-    setIsSubmitting(true);
-    try {
-      await handleSubmit(e);
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
   return (
     <>
       {openModalHomeEdit && (
@@ -162,7 +147,7 @@ export default function ModalContent({
                   onClick={closedModalButton}
                 />
               </div>
-              <form className="edituser-form" onSubmit={handleInternalSubmit}>
+              <form className="edituser-form" onSubmit={handleSubmit}>
                 <div className="inputs-modal-edituser">
                   <label>{firstLabel}</label>
                   <input
@@ -293,9 +278,7 @@ export default function ModalContent({
                   </>
                 )}
                 <div className="modal-content-button">
-                  <button type="submit" disabled={isSubmitting}>
-                    {isSubmitting ? "Enviando..." : buttonText}
-                  </button>
+                  <button type="submit">{buttonText}</button>
                 </div>
               </form>
             </div>
@@ -315,7 +298,7 @@ export default function ModalContent({
                   onClick={closedModalButton}
                 />
               </div>
-              <form className="edituser-form" onSubmit={handleInternalSubmit}>
+              <form className="edituser-form" onSubmit={handleSubmit}>
                 <div className="inputs-modal-edituser">
                   <label>{eleventhLabel}</label>
                   <input
@@ -362,8 +345,9 @@ export default function ModalContent({
                   </div>
                 </div>
                 <div className="inputs-modal-form-radios">
-                  <label>{radioLabel}</label>
+                  <label> {radioLabel}</label>
                   <div className="inputs-modal-radios">
+                    {" "}
                     <div className="inputs-modal-radio">
                       <input
                         {...firstRadioInputProps}
@@ -371,6 +355,7 @@ export default function ModalContent({
                         type={firstRadioType}
                         value={firstRadioValue}
                       />
+
                       <span>{firstRadiotext}</span>
                     </div>
                     <div className="inputs-modal-radio">
@@ -381,13 +366,11 @@ export default function ModalContent({
                         value={secondRadioValue}
                       />
                       <span>{secondRadiotext}</span>
-                    </div>
+                    </div>{" "}
                   </div>
                 </div>
                 <div className="modal-content-button">
-                  <button type="submit" disabled={isSubmitting}>
-                    {isSubmitting ? "Enviando..." : buttonText}
-                  </button>
+                  <button type="submit">{buttonText}</button>
                 </div>
               </form>
             </div>

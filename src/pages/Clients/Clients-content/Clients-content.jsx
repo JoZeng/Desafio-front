@@ -1,8 +1,8 @@
+import { useClients } from "../../../context/clientsContext.jsx";
 import "./Clients-content.css";
-import { useState, useEffect } from "react";
-import { getItem, setItem } from "../../../utils/storage";
+import { useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import api from "../../../services/api";
+import { setItem } from "../../../utils/storage";
 import clientsimage from "../../../assets/clients.svg";
 import filterimage from "../../../assets/filter.svg";
 import addcharges from "../../../assets/iconCharges.svg";
@@ -10,90 +10,28 @@ import addcharges from "../../../assets/iconCharges.svg";
 export default function ClientsContent({
   openModalAddClient,
   openModalAddCharges,
+  refreshTrigger, // Recebe o trigger de atualização
 }) {
-  const [clients, setClients] = useState([]);
-  const [search, setsSearch] = useState("");
-  const [paginaAtual, setPaginaAtual] = useState(1);
-  const [totalPaginas, setTotalPaginas] = useState(1);
+  const {
+    clients,
+    search,
+    setSearch,
+    paginaAtual,
+    setPaginaAtual,
+    totalPaginas,
+    loading,
+    fetchClients, // Deve vir memorizada com useCallback no contexto
+  } = useClients();
+
   const navigate = useNavigate();
 
+  const lastRefresh = useRef(null);
   useEffect(() => {
-    loadDataClients(paginaAtual);
-  }, [paginaAtual]);
-
-  async function loadDataClients(pagina = 1) {
-    try {
-      const token = getItem("token");
-      const response = await api.get(`/clientes?pagina=${pagina}&limite=10`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      const clientes = response.data?.clientes || [];
-      const totalPaginas = response.data?.totalPaginas || 1;
-
-      const clientesComStatus = await Promise.all(
-        clientes.map(async (cliente) => {
-          try {
-            const resCobrancas = await api.get(
-              `/cliente/cobrancas/${cliente.id}`,
-              {
-                headers: {
-                  Authorization: `Bearer ${token}`,
-                },
-              }
-            );
-
-            const cobrancas = resCobrancas.data?.cobrancas || [];
-            console.log("Cliente:", cliente.nome, "Cobranças:", cobrancas);
-            let totalPago = 0;
-            let totalVencido = 0;
-
-            const today = new Date();
-            today.setHours(0, 0, 0, 0);
-
-            cobrancas.forEach((c) => {
-              const status = c.status?.trim().toLowerCase();
-              const vencimento = new Date(c.vencimento);
-              vencimento.setHours(0, 0, 0, 0);
-
-              if (status === "pago") {
-                totalPago += Number(c.valor);
-              } else if (status === "pendente" && vencimento < today) {
-                totalVencido += Number(c.valor);
-              }
-            });
-
-            return {
-              ...cliente,
-              cobrancas,
-              status: totalVencido > 0 ? "inadimplente" : "em dia",
-              totalPago,
-              totalVencido,
-            };
-          } catch (err) {
-            console.error(
-              `Erro ao buscar cobranças do cliente ${cliente.id}`,
-              err
-            );
-            return {
-              ...cliente,
-              status: "em dia",
-              cobrancas: [],
-              totalPago: 0,
-              totalPendente: 0,
-            };
-          }
-        })
-      );
-
-      setClients(clientesComStatus);
-      setTotalPaginas(totalPaginas);
-    } catch (error) {
-      console.log(error.response?.data?.message || "Erro ao carregar clientes");
+    if (refreshTrigger !== lastRefresh.current) {
+      lastRefresh.current = refreshTrigger;
+      fetchClients();
     }
-  }
+  }, [refreshTrigger, fetchClients]);
 
   return (
     <div className="clients-content">
@@ -116,7 +54,7 @@ export default function ClientsContent({
             className="clients-content-header-secondsession-input"
             placeholder="Pesquisa"
             value={search}
-            onChange={(e) => setsSearch(e.target.value)}
+            onChange={(e) => setSearch(e.target.value)}
           />
         </div>
       </div>
@@ -132,50 +70,57 @@ export default function ClientsContent({
           </div>
           <hr className="clients-content-divider" />
 
-          {clients
-            .filter(
-              (cliente) =>
-                cliente.nome.toLowerCase().includes(search.toLowerCase()) ||
-                cliente.email.toLowerCase().includes(search.toLowerCase()) ||
-                cliente.cpf.includes(search)
-            )
-            .map((cliente) => (
-              <div key={cliente.id}>
-                <div className="clients-content-body-fields-list-values">
-                  <div>
-                    <button onClick={() => navigate(`/clientes/${cliente.id}`)}>
-                      {cliente.nome}
-                    </button>
-                  </div>
-                  <div>{cliente.cpf}</div>
-                  <div>{cliente.email}</div>
-                  <div>{cliente.telefone}</div>
-                  <div>
+          {loading ? (
+            <div>Carregando...</div>
+          ) : (
+            clients
+              .filter(
+                (cliente) =>
+                  cliente.nome.toLowerCase().includes(search.toLowerCase()) ||
+                  cliente.email.toLowerCase().includes(search.toLowerCase()) ||
+                  cliente.cpf.includes(search)
+              )
+              .map((cliente) => (
+                <div key={cliente.id}>
+                  <div className="clients-content-body-fields-list-values">
                     <div>
-                      {cliente.status === "inadimplente" ? (
-                        <div className="clients-charges-indebtor">
-                          Inadimplente
-                        </div>
-                      ) : (
-                        <div className="clients-charges-inday">Em dia</div>
-                      )}
+                      <button
+                        onClick={() => navigate(`/clientes/${cliente.id}`)}
+                      >
+                        {cliente.nome}
+                      </button>
+                    </div>
+                    <div>{cliente.cpf}</div>
+                    <div>{cliente.email}</div>
+                    <div>{cliente.telefone}</div>
+                    <div>
+                      <div>
+                        {cliente.status === "inadimplente" ? (
+                          <div className="clients-charges-indebtor">
+                            Inadimplente
+                          </div>
+                        ) : (
+                          <div className="clients-charges-inday">Em dia</div>
+                        )}
+                      </div>
+                    </div>
+                    <div>
+                      <button
+                        onClick={() => {
+                          setItem("clientName", cliente.nome);
+                          setItem("clientId", cliente.id);
+                          openModalAddCharges();
+                        }}
+                      >
+                        <img src={addcharges} alt="addcharges" />
+                      </button>
                     </div>
                   </div>
-                  <div>
-                    <button
-                      onClick={() => {
-                        setItem("clientName", cliente.nome);
-                        setItem("clientId", cliente.id);
-                        openModalAddCharges();
-                      }}
-                    >
-                      <img src={addcharges} alt="addcharges" />
-                    </button>
-                  </div>
+                  <hr className="clients-content-divider" />
                 </div>
-                <hr className="clients-content-divider" />
-              </div>
-            ))}
+              ))
+          )}
+
           <div className="clients-content-pagination">
             <button
               onClick={() => setPaginaAtual((p) => Math.max(p - 1, 1))}

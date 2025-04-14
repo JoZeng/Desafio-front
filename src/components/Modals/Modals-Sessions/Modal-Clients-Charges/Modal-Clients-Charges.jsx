@@ -8,6 +8,7 @@ export default function ModalClientsCharges({
   openModal,
   closedModal,
   closedModalButton,
+  onUpdate,
 }) {
   const [openModalSucess, setOpenModalSucess] = useState(false);
   const today = new Date().toISOString().split("T")[0];
@@ -63,6 +64,9 @@ export default function ModalClientsCharges({
         });
 
         setOpenModalSucess(true);
+        if (onUpdate) {
+          onUpdate();
+        }
       }
     } catch (error) {
       if (error.response) {
@@ -75,8 +79,7 @@ export default function ModalClientsCharges({
     <>
       <div>
         <ModalContent
-          onSubmit={onSubmit}
-          reactHookHandleSubmit={handleSubmit}
+          handleSubmit={handleSubmit(onSubmit)}
           openModalAddCharges={openModal}
           closedModalButton={closedModalButton}
           closedModal={closedModal}
