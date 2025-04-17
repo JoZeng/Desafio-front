@@ -1,23 +1,27 @@
-import React, { createContext, useState, useEffect, useContext } from "react";
-import { getItem } from "../../utils/storage";
-import api from "../../services/api";
+import {
+  createContext,
+  useState,
+  useEffect,
+  useContext,
+  useRef,
+  useCallback,
+} from "react";
+import { useNavigate } from "react-router-dom";
+import { getItem } from "../../../../utils/storage";
+import api from "../../../../services/api";
 
-export const ClientsContext = createContext();
+export const ClientsContentContext = createContext();
 
-export const ClientsProvider = ({ children }) => {
+export const ClientsContentProvider = ({ children, refreshTrigger }) => {
   const [clients, setClients] = useState([]);
   const [search, setSearch] = useState("");
   const [paginaAtual, setPaginaAtual] = useState(1);
   const [totalPaginas, setTotalPaginas] = useState(1);
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+  const lastRefresh = useRef(null);
 
-  useEffect(() => {
-    if (search.trim() === "") {
-      fetchClients(paginaAtual);
-    }
-  }, [search, paginaAtual]);
-
-  const fetchClients = async (pagina = 1) => {
+  const fetchClients = useCallback(async (pagina = 1) => {
     setLoading(true);
     try {
       const token = getItem("token");
@@ -85,32 +89,45 @@ export const ClientsProvider = ({ children }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []); // "[]": A função `fetchClients` só será criada uma vez.
+
+  useEffect(() => {
+    if (search.trim() === "") {
+      fetchClients(paginaAtual);
+    }
+  }, [search, paginaAtual, fetchClients]); // `fetchClients` é estável aqui, pois é memorada com `useCallback`.
+
+  useEffect(() => {
+    if (refreshTrigger !== lastRefresh.current) {
+      lastRefresh.current = refreshTrigger;
+      fetchClients();
+    }
+  }, [refreshTrigger, fetchClients]); // `fetchClients` agora é estável e não será recriada
 
   return (
-    <ClientsContext.Provider
+    <ClientsContentContext.Provider
       value={{
         clients,
+        navigate,
         search,
         setSearch,
         paginaAtual,
         setPaginaAtual,
         totalPaginas,
-        fetchClients,
         loading,
       }}
     >
       {children}
-    </ClientsContext.Provider>
+    </ClientsContentContext.Provider>
   );
 };
 
 export const useClients = () => {
-  const context = useContext(ClientsContext);
-
+  const context = useContext(ClientsContentContext);
   if (!context) {
-    throw new Error("useClients deve ser usado dentro de um ClientsProvider");
+    throw new Error(
+      "useClients deve ser usado dentro de ClientsContentProvider"
+    );
   }
-
   return context;
 };

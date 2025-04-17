@@ -2,10 +2,12 @@ import "./modal-content.css";
 import ButtonClose from "../../../assets/button-close.svg";
 
 export default function ModalContent({
-  openModalHomeEdit,
+  openModalUserEdit,
   closedModalButton,
   headerModalText,
   handleSubmit,
+  isSubmitting,
+  isSubmittedSuccessfully,
 
   firstLabel,
   firstClassName,
@@ -52,6 +54,7 @@ export default function ModalContent({
   buttonText,
 
   openModalClientAdd,
+  openModalClientEdit,
 
   seventhLabel,
   seventhClassName,
@@ -125,12 +128,13 @@ export default function ModalContent({
 }) {
   return (
     <>
-      {openModalHomeEdit && (
+      {(openModalUserEdit || openModalClientAdd || openModalClientEdit) && (
         <div className="modal-background">
           <div
             className={
-              (openModalHomeEdit && "modal-content-home-edit") ||
-              (openModalClientAdd && "modal-content-client-add")
+              (openModalUserEdit && "modal-content-user-edit") ||
+              (openModalClientAdd && "modal-content-client-add") ||
+              (openModalClientEdit && "modal-content-client-edit")
             }
           >
             <div className="modal-content-padding">
@@ -138,9 +142,9 @@ export default function ModalContent({
                 <p>{headerModalText}</p>
                 <img
                   className={
-                    openModalClientAdd
-                      ? "modal-content-image-client-add"
-                      : "modal-content-image-home-edit"
+                    (openModalUserEdit && "modal-content-image-user-edit") ||
+                    (openModalClientAdd && "modal-content-image-client-add") ||
+                    (openModalClientEdit && "modal-content-image-client-edit")
                   }
                   src={ButtonClose}
                   alt="Fechar"
@@ -221,7 +225,7 @@ export default function ModalContent({
                   />
                 </div>
                 {sixthError}
-                {openModalClientAdd && (
+                {(openModalClientAdd || openModalClientEdit) && (
                   <>
                     <div className="inputs-minors-modal-edituser">
                       <div className="input-minor-modal-edituser">
@@ -278,7 +282,12 @@ export default function ModalContent({
                   </>
                 )}
                 <div className="modal-content-button">
-                  <button type="submit">{buttonText}</button>
+                  <button
+                    type="submit"
+                    disabled={isSubmitting || isSubmittedSuccessfully}
+                  >
+                    Aplicar
+                  </button>
                 </div>
               </form>
             </div>
@@ -370,7 +379,12 @@ export default function ModalContent({
                   </div>
                 </div>
                 <div className="modal-content-button">
-                  <button type="submit">{buttonText}</button>
+                  <button
+                    type="submit"
+                    disabled={isSubmitting || isSubmittedSuccessfully}
+                  >
+                    Aplicar
+                  </button>
                 </div>
               </form>
             </div>

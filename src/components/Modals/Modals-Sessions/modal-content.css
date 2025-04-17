@@ -12,7 +12,7 @@
   backdrop-filter: blur(5px);
 }
 
-.modal-content-home-edit {
+.modal-content-user-edit {
   width: 491px;
   display: flex;
   flex-direction: column;
@@ -21,7 +21,8 @@
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
 }
 
-.modal-content-client-add {
+.modal-content-client-add,
+.modal-content-client-edit {
   width: 600px;
   display: flex;
   flex-direction: column;
@@ -57,16 +58,24 @@
   padding-bottom: 20px;
 }
 
+.modal-content-image-user-edit {
+  display: flex;
+  position: relative;
+  left: 70px;
+  bottom: 12px;
+}
+
 .modal-content-image-client-add {
   display: flex;
   position: relative;
   left: 120px;
   bottom: 12px;
 }
-.modal-content-image-home-edit {
+
+.modal-content-image-client-edit {
   display: flex;
   position: relative;
-  left: 70px;
+  left: 120px;
   bottom: 12px;
 }
 
@@ -116,6 +125,14 @@
   padding-bottom: 6px;
 }
 
+.inputs-minors-modal-edituser-second {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  padding-bottom: 20px;
+  gap: 25px;
+}
+
 .edituser-form input,
 .input-minor-modal-edituser-city input,
 .input-minor-modal-edituser-uf input {
@@ -125,7 +142,16 @@
   border-radius: 10px;
   border: 1px solid #dedee9;
 }
-
+.input-minor-modal-edituser-city,
+.input-minor-modal-edituser-uf {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+.input-minor-modal-edituser-uf {
+  width: 105px;
+  flex: 0 0 auto;
+}
 .modal-content-button {
   display: flex;
   justify-content: center;
@@ -143,26 +169,6 @@
   color: #f8f8f9;
   font-weight: 400;
   font-size: 18px;
-}
-
-.inputs-minors-modal-edituser-second {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding-bottom: 20px;
-}
-
-.input-minor-modal-edituser-city input {
-  width: 135%;
-}
-
-.input-minor-modal-edituser-uf input {
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  max-width: 80px;
 }
 
 .inputs-modal-radios {

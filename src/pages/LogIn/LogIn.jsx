@@ -64,7 +64,7 @@ function LogIn() {
       <RightSection
         title={"Faça seu login"}
         onSubmit={handleSubmit(onSubmit)}
-        firstLabel={"E-email"}
+        firstLabel={"E-mail"}
         firstPlaceholder={"Digite seu e-mail"}
         firstType={"email"}
         firstInputProps={{ ...register("email") }}

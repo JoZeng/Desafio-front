@@ -1,37 +1,24 @@
-import { useClients } from "../../../contexts/clients/ClientsContext";
 import "./clients-content.css";
-import { useEffect, useRef } from "react";
-import { useNavigate } from "react-router-dom";
-import { setItem } from "../../../utils/storage.jsx";
-import clientsimage from "../../../assets/clients.svg";
-import filterimage from "../../../assets/filter.svg";
-import addcharges from "../../../assets/iconCharges.svg";
+import { useClients } from "./ClientsContentContext.jsx";
+import { setItem } from "../../../../utils/storage.jsx";
+import clientsimage from "../../../../assets/clients.svg";
+import filterimage from "../../../../assets/filter.svg";
+import addcharges from "../../../../assets/iconCharges.svg";
 
 export default function ClientsContent({
   openModalAddClient,
   openModalAddCharges,
-  refreshTrigger, // Recebe o trigger de atualização
 }) {
   const {
     clients,
     search,
+    navigate,
     setSearch,
     paginaAtual,
     setPaginaAtual,
     totalPaginas,
     loading,
-    fetchClients, // Deve vir memorizada com useCallback no contexto
   } = useClients();
-
-  const navigate = useNavigate();
-
-  const lastRefresh = useRef(null);
-  useEffect(() => {
-    if (refreshTrigger !== lastRefresh.current) {
-      lastRefresh.current = refreshTrigger;
-      fetchClients();
-    }
-  }, [refreshTrigger, fetchClients]);
 
   return (
     <div className="clients-content">

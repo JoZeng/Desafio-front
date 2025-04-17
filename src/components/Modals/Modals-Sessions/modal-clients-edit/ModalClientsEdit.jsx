@@ -1,128 +1,28 @@
 import ModalContent from "../ModalContent";
 import { Controller } from "react-hook-form";
 import { IMaskInput } from "react-imask";
-import { useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
-import { useParams } from "react-router-dom";
-import * as yup from "yup";
-import { useState, useEffect } from "react";
-import { getItem } from "../../../../utils/storage";
-import api from "../../../../services/api";
+import { useModalClientsEdit } from "./ModalClientsEditContext";
 
-export default function ModalClientsEdit({
-  openModal,
-  closedModal,
-  closedModalButton,
-  onEditSuccess,
-}) {
-  const [openModalSucess, setOpenModalSucess] = useState(false);
-  const token = getItem("token");
-  const { id } = useParams();
-  const [errorMessage, setErrorMessage] = useState({
-    email: "",
-    cpassword: "",
-    cpf: "",
-    phone: "",
-  });
-
-  const schema = yup
-    .object()
-    .shape({
-      name: yup.string().required("Campo obrigátorio"),
-      email: yup.string().required("Campo obrigátorio"),
-      cpf: yup
-        .string()
-        .matches(/^\d{3}\.\d{3}\.\d{3}-\d{2}$/, "CPF inválido")
-        .required("Campo obrigatório"),
-      phone: yup
-        .string()
-        .matches(/^\d{3}\.\d{3}\.\d{3}-\d{2}$/, "Telefone inválido")
-        .required("Campo obrigatório"),
-    })
-    .required();
-
+export default function ModalClientsEdit({}) {
   const {
+    openModal,
+    closedModal,
+    closedModalButton,
     register,
     handleSubmit,
     control,
-    formState: { errors },
-    reset,
-  } = useForm({
-    mode: "onBlur",
-    resolver: yupResolver(schema),
-  });
-
-  useEffect(() => {
-    if (openModalSucess) {
-      const timer = setTimeout(() => {
-        setOpenModalSucess(false);
-        closedModal();
-      }, 3000);
-
-      return () => clearTimeout(timer);
-    }
-  }, [openModalSucess, closedModal]);
-
-  async function onSubmit(data) {
-    console.log("Submetido!", data);
-    setErrorMessage({ email: "", cpassword: "", cpf: "", phone: "" });
-
-    try {
-      if (!token) {
-        console.error("Token não encontrado!");
-        return;
-      }
-      const response = await api.put(
-        `/clientes/${id}`,
-        {
-          nome: data.name,
-          email: data.email,
-          cpf: data.cpf,
-          telefone: data.phone,
-          cep: data.cep,
-          endereco: data.adress,
-          complemento: data.complement,
-          bairro: data.neighborhood,
-          cidade: data.city,
-          estado: data.uf,
-        },
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
-
-      onEditSuccess();
-
-      if (response.status >= 200 && response.status < 300) {
-        console.log("Atualização do cliente feito com sucesso!");
-
-        reset({
-          name: data.name,
-          email: data.email,
-          cpf: data.cpf,
-          telefone: data.phone,
-          endereco: data.adress,
-          complemento: data.complement,
-          cep: data.cep,
-          bairro: data.neighborhood,
-          cidade: data.city,
-          estado: data.uf,
-        });
-
-        setOpenModalSucess(true);
-      }
-    } catch (error) {
-      if (error.response) {
-        console.log(error.response.data);
-      }
-    }
-  }
+    onSubmit,
+    errors,
+    isSubmitting,
+    isSubmittedSuccessfully,
+    openModalSucess,
+    errorMessage,
+  } = useModalClientsEdit();
 
   return (
     <div>
       <ModalContent
-        openModalClientAdd={true}
-        openModalHomeEdit={openModal}
+        openModalClientEdit={openModal}
         closedModal={closedModal}
         closedModalButton={closedModalButton}
         openModalSucess={openModalSucess}
@@ -152,13 +52,12 @@ export default function ModalClientsEdit({
           }),
         }}
         secondType={"email"}
-        secondError={
-          errors.email ? (
+        secondErrorError={
+          errors.email && (
             <span className="input-errors">{errors.email.message}</span>
-          ) : errorMessage.email ? (
-            <span className="input-errors">{errorMessage.email}</span>
-          ) : null
+          )
         }
+        null
         thirdLabel={"CPF*"}
         thirdClassName={errors.cpf ? "label-errors" : null}
         thirdPlaceholder={"Digite seu CPF"}
@@ -174,6 +73,10 @@ export default function ModalClientsEdit({
                   mask="000.000.000-00"
                   className="input"
                   placeholder="Digite seu CPF"
+                  value={field.value}
+                  inputRef={(el) => {
+                    field.ref(el);
+                  }}
                 />
               )}
             />
@@ -195,10 +98,13 @@ export default function ModalClientsEdit({
               control={control}
               render={({ field }) => (
                 <IMaskInput
-                  {...field}
                   mask="00-00000.0000"
                   className="input"
-                  placeholder="Digite seu Telefone"
+                  placeholder="Digite seu CPF"
+                  value={field.value}
+                  inputRef={(el) => {
+                    field.ref(el);
+                  }}
                 />
               )}
             />
@@ -208,12 +114,12 @@ export default function ModalClientsEdit({
         fifthClassName={errors.cpassword ? "label-errors" : null}
         fifthPlaceholder={"Digite o endereço"}
         fifthInputProps={{
-          ...register("adress", {}),
+          ...register("address", {}),
         }}
-        fifthType={"adress"}
+        fifthType={"address"}
         fifthError={
-          errors.adress && (
-            <span className="input-errors">{errors.adress.message}</span>
+          errors.address && (
+            <span className="input-errors">{errors.address.message}</span>
           )
         }
         sixthLabel={"Complemento"}
@@ -222,7 +128,7 @@ export default function ModalClientsEdit({
         sixthInputProps={{
           ...register("complement", {}),
         }}
-        sixthType={"number"}
+        sixthType={"text"}
         sixthError={
           errors.complement && (
             <span className="input-errors">{errors.complement.message}</span>
@@ -234,14 +140,17 @@ export default function ModalClientsEdit({
         seventhInputProps={{
           children: (
             <Controller
-              name="uf"
+              name="cep"
               control={control}
               render={({ field }) => (
                 <IMaskInput
-                  {...field}
-                  mask="000000-000"
+                  mask="000.000.000-00"
                   className="input"
-                  placeholder="Digite seu CEP"
+                  placeholder="Digite seu CPF"
+                  value={field.value}
+                  inputRef={(el) => {
+                    field.ref(el);
+                  }}
                 />
               )}
             />
@@ -249,20 +158,20 @@ export default function ModalClientsEdit({
         }}
         seventhType={"number"}
         seventhError={
-          errors.complement && (
-            <span className="input-errors">{errors.complement.message}</span>
+          errors.cep && (
+            <span className="input-errors">{errors.cep.message}</span>
           )
         }
         eighthLabel={"Bairro"}
-        eighthClassName={errors.complement ? "label-errors" : null}
+        eighthClassName={errors.neighborhood ? "label-errors" : null}
         eighthPlaceholder={"Digite o bairro"}
         eighthInputProps={{
           ...register("neighborhood", {}),
         }}
         eighthType={"name"}
         eighthError={
-          errors.complement && (
-            <span className="input-errors">{errors.complement.message}</span>
+          errors.neighborhood && (
+            <span className="input-errors">{errors.neighborhood.message}</span>
           )
         }
         ninthLabel={"Cidade"}
@@ -273,8 +182,8 @@ export default function ModalClientsEdit({
         }}
         ninthType={"name"}
         ninthError={
-          errors.complement && (
-            <span className="input-errors">{errors.complement.message}</span>
+          errors.city && (
+            <span className="input-errors">{errors.city.message}</span>
           )
         }
         tenthLabel={"UF"}
@@ -291,6 +200,9 @@ export default function ModalClientsEdit({
                   mask="aa"
                   className="input"
                   placeholder="Digite seu UF"
+                  inputRef={(el) => {
+                    field.ref(el);
+                  }}
                 />
               )}
             />
@@ -298,11 +210,11 @@ export default function ModalClientsEdit({
         }}
         tenthType={"name"}
         tenthError={
-          errors.complement && (
-            <span className="input-errors">{errors.complement.message}</span>
-          )
+          errors.uf && <span className="input-errors">{errors.uf.message}</span>
         }
         buttonText={"Aplicar"}
+        isSubmitting={isSubmitting}
+        isSubmittedSuccessfully={isSubmittedSuccessfully}
       />
     </div>
   );

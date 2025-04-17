@@ -2,7 +2,7 @@ import "./header.css";
 import { useState } from "react";
 import { useLocation } from "react-router-dom";
 import Icondown from "../../assets/Icon-down.png";
-import ModalHomeHeader from "../modals/modal-home-header/ModalHomeHeader";
+import ModalHomeHeader from "../modals/modal-header/ModalHeader";
 import { getItem } from "../../utils/storage";
 
 function Header({ text, text2, handleModalUserEdit }) {

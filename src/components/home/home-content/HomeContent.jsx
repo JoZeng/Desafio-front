@@ -88,7 +88,7 @@ function HomeContent() {
           );
 
           let totalPago = 0;
-          let totalVencido = 0;
+          let totalPendente = 0;
 
           cobrancasCliente.forEach((c) => {
             const status = c.status?.trim().toLowerCase();
@@ -97,18 +97,19 @@ function HomeContent() {
 
             if (status === "pago") {
               totalPago += Number(c.valor);
-            } else if (status === "pendente" && venc < today) {
-              totalVencido += Number(c.valor);
+            } else if (status === "pendente") {
+              totalPendente += Number(c.valor);
             }
           });
 
-          const status = totalPago >= totalVencido ? "em dia" : "inadimplente";
+          // A lógica de status agora segue a lógica correta, de "em dia" ou "inadimplente"
+          const status = totalPago >= totalPendente ? "em dia" : "inadimplente";
 
           return {
             ...cliente,
             nome_cliente: cliente.nome,
             totalPago,
-            totalVencido,
+            totalPendente,
             status,
           };
         });
@@ -221,7 +222,7 @@ function HomeContent() {
           clientsname={clientsInadimplentes.map((c) => c.nome_cliente)}
           idnumber={clientsInadimplentes.map((c) => `#${c.id}`)}
           valuechargesamount={clientsInadimplentes.map((c) =>
-            (Number(c.totalVencido) || 0).toLocaleString("pt-BR", {
+            (Number(c.totalPendente) || 0).toLocaleString("pt-BR", {
               style: "currency",
               currency: "BRL",
             })

@@ -1,8 +1,8 @@
-import "./modal-home-header.css";
+import "./modal-header.css";
 import { useNavigate } from "react-router-dom";
+import { clear } from "../../../utils/storage";
 import BotaoEditar from "../../../assets/button-editar.svg";
 import BotaoLogout from "../../../assets/button-logout.svg";
-import { clear } from "../../../utils/storage";
 
 export default function ModalHomeHeader({
   openMenuModal,

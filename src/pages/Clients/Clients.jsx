@@ -1,69 +1,73 @@
-import { useState } from "react";
 import "./clients.css";
 import SideBar from "../../components/sidebar/SideBar";
 import Header from "../../components/header/Header";
-import ClientsContent from "./clients-content/ClientsContent/";
-import ModalHomeUserEdit from "../../components/modals/modals-sessions/modal-home-user-edit/ModalHomeUserEdit";
+import ClientsContent from "../../components/clients/content/client-content/ClientsContent";
+import ModalUserEdit from "../../components/modals/modals-sessions/modal-user-edit/ModalUserEdit";
 import ModalClientsAdd from "../../components/modals/modals-sessions/modal-clients-add/ModalClientsAdd";
-import ModalClientsCharges from "../../components/modals/modals-sessions/modal-clients-charges/ModalClientsCharges";
-import { ClientsProvider } from "../../contexts/clients/ClientsContext";
+import ModalClientsCharges from "../../components/modals/modals-sessions/modal-clients-add-charges/ModalClientsAddCharges";
+import { useModalStates } from "../../components/modals/modals-states-context/ModalStatesContext";
+import { ClientsContentProvider } from "../../components/clients/content/client-content/ClientsContentContext";
+import { ModalClientsAddChargesProvider } from "../../components/modals/modals-sessions/modal-clients-add-charges/ModalClientsAddChargesContext";
+import { ModalClientsAddProvider } from "../../components/modals/modals-sessions/modal-clients-add/ModalClientsAddContext";
+import { ModalUserEditProvider } from "../../components/modals/modals-sessions/modal-user-edit/ModalUserEditContext";
 
 export default function Clients() {
-  const [openModalMenuEdit, setOpenModalMenuEdit] = useState(false);
-  const handleModalUserEdit = () => setOpenModalMenuEdit(true);
-  const closeModalUserEdit = () => setOpenModalMenuEdit(false);
+  const {
+    openModaUserEdit,
+    setOpenModaUserEdit,
+    handleModaUserEdit,
+    closeModaUserEdit,
 
-  const [openModalClientsAdd, setOpenModalClientsAdd] = useState(false);
-  const handleModalClientsAdd = () => setOpenModalClientsAdd(true);
-  const closeModalClientsAdd = () => setOpenModalClientsAdd(false);
+    openModalClientsAdd,
+    setOpenModalClientsAdd,
+    handleModalClientsAdd,
+    closeModalClientsAdd,
 
-  const [openModalAddCharges, setOpenModalAddCharges] = useState(false);
-  const handleModalAddCharges = () => setOpenModalAddCharges(true);
-  const closeModalAddCharges = () => setOpenModalAddCharges(false);
+    openModalAddCharges,
+    setOpenModalAddCharges,
+    handleModalAddCharges,
+    closeModalAddCharges,
 
-  // Estado para forçar atualização dos dados
-  const [refreshData, setRefreshData] = useState(false);
-
-  // Função passada para o modal chamar após submit com sucesso
-  const handleUpdateData = () => {
-    setRefreshData((prev) => !prev); // Alterna o valor para forçar reload
-  };
+    refreshData,
+    handleUpdateData,
+  } = useModalStates();
 
   return (
     <div className="clients-page">
-      <ClientsProvider>
-        <SideBar />
-        <div className="clients-page-content">
-          <Header
-            text={"Cobranças"}
-            handleModalUserEdit={handleModalUserEdit}
-          />
+      <SideBar />
+      <div className="clients-page-content">
+        <Header text={"Cobranças"} handleModalUserEdit={handleModaUserEdit} />
+        <ModalUserEditProvider
+          openModal={openModaUserEdit}
+          closedModal={setOpenModaUserEdit}
+          closedModalButton={closeModaUserEdit}
+        >
+          <ModalUserEdit />
+        </ModalUserEditProvider>
+        <hr />
+        <ModalClientsAddProvider
+          openModal={openModalClientsAdd}
+          closedModal={setOpenModalClientsAdd}
+          closedModalButton={closeModalClientsAdd}
+        >
+          <ModalClientsAdd />
+        </ModalClientsAddProvider>
+        <ModalClientsAddChargesProvider
+          openModal={openModalAddCharges}
+          closedModal={setOpenModalAddCharges}
+          closedModalButton={closeModalAddCharges}
+          onUpdate={handleUpdateData}
+        >
+          <ModalClientsCharges />
+        </ModalClientsAddChargesProvider>
 
-          <ModalHomeUserEdit
-            openModal={openModalMenuEdit}
-            closedModal={setOpenModalMenuEdit}
-            closedModalButton={closeModalUserEdit}
-          />
-          <hr />
-          <ModalClientsAdd
-            openModal={openModalClientsAdd}
-            closedModal={setOpenModalClientsAdd}
-            closedModalButton={closeModalClientsAdd}
-          />
-          <ModalClientsCharges
-            openModal={openModalAddCharges}
-            closedModal={setOpenModalAddCharges}
-            closedModalButton={closeModalAddCharges}
-            onUpdate={handleUpdateData}
-          />
-
+        <ClientsContentProvider refreshTrigger={refreshData}>
           <ClientsContent
             openModalAddClient={handleModalClientsAdd}
             openModalAddCharges={handleModalAddCharges}
-            refreshTrigger={handleUpdateData}
           />
-        </div>
-      </ClientsProvider>
+        </ClientsContentProvider>
+      </div>
     </div>
   );
 }

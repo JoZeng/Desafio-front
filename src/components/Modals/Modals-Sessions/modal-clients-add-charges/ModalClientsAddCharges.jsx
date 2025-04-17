@@ -1,79 +1,19 @@
 import ModalContent from "../ModalContent";
-import { useForm } from "react-hook-form";
-import { useState, useEffect } from "react";
-import api from "../../../../services/api";
-import { getItem } from "../../../../utils/storage";
+import { useModalClientsAddCharges } from "./ModalClientsAddChargesContext";
 
-export default function ModalClientsCharges({
-  openModal,
-  closedModal,
-  closedModalButton,
-  onUpdate,
-}) {
-  const [openModalSucess, setOpenModalSucess] = useState(false);
-  const today = new Date().toISOString().split("T")[0];
-  const clientName = getItem("clientName");
+export default function ModalClientsAddCharges() {
   const {
+    openModal,
+    closedModal,
+    closedModalButton,
     register,
     handleSubmit,
-    reset,
-    formState: { errors },
-  } = useForm({
-    mode: "onBlur",
-  });
-
-  useEffect(() => {
-    if (openModalSucess) {
-      const timer = setTimeout(() => {
-        setOpenModalSucess(false);
-        closedModal();
-      }, 3000);
-
-      return () => clearTimeout(timer);
-    }
-  }, [openModalSucess, closedModal]);
-
-  async function onSubmit(data) {
-    const token = getItem("token");
-
-    try {
-      if (!token) {
-        console.error("Token não encontrado!");
-        return;
-      }
-      const response = await api.post(
-        "/clientes/cobrancas",
-        {
-          descricao: data.description,
-          vencimento: data.expirationdate,
-          valor: data.value,
-          status: data.status,
-          cliente_id: getItem("clientId"),
-        },
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
-      console.log("erro 2");
-      if (response.status >= 200 && response.status < 300) {
-        reset({
-          descricao: data.description,
-          vencimento: data.expirationdate,
-          valor: data.value,
-          status: data.status,
-        });
-
-        setOpenModalSucess(true);
-        if (onUpdate) {
-          onUpdate();
-        }
-      }
-    } catch (error) {
-      if (error.response) {
-        console.error(error.response.data);
-      }
-    }
-  }
+    onSubmit,
+    clientName,
+    errors,
+    isSubmitting,
+    isSubmittedSuccessfully,
+  } = useModalClientsAddCharges();
 
   return (
     <>
@@ -128,7 +68,10 @@ export default function ModalClientsCharges({
           secondRadioName={"status"}
           secondRadioValue={"pendente"}
           secondRadiotext={"Cobrança Pendente"}
+          defaultChecked
           buttonText={"Aplicar"}
+          isSubmitting={isSubmitting}
+          isSubmittedSuccessfully={isSubmittedSuccessfully}
         />
       </div>
     </>
