@@ -1,10 +1,11 @@
 import "./home.css";
 import SideBar from "../../components/sidebar/SideBar";
 import Header from "../../components/header/Header";
-import HomeContent from "../home/home-content/HomeContent";
+import HomeContent from "../../components/home/home-content/HomeContent";
 import ModalUserEdit from "../../components/modals/modals-sessions/modal-user-edit/ModalUserEdit";
 import { ModalUserEditProvider } from "../../components/modals/modals-sessions/modal-user-edit/ModalUserEditContext";
 import { useModalStates } from "../../components/modals/modals-states-context/ModalStatesContext";
+import HomeContentContextProvider from "../../components/home/home-content/HomeContentContext";
 
 export default function Home() {
   const {
@@ -29,7 +30,9 @@ export default function Home() {
           <ModalUserEdit />
         </ModalUserEditProvider>
         <hr />
-        <HomeContent />
+        <HomeContentContextProvider>
+          <HomeContent />
+        </HomeContentContextProvider>
       </div>
     </div>
   );

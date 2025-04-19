@@ -10,6 +10,7 @@ import { ClientsContentProvider } from "../../components/clients/content/client-
 import { ModalClientsAddChargesProvider } from "../../components/modals/modals-sessions/modal-clients-add-charges/ModalClientsAddChargesContext";
 import { ModalClientsAddProvider } from "../../components/modals/modals-sessions/modal-clients-add/ModalClientsAddContext";
 import { ModalUserEditProvider } from "../../components/modals/modals-sessions/modal-user-edit/ModalUserEditContext";
+import useRefreshTrigger from "../../hooks/useRefreshTrigger";
 
 export default function Clients() {
   const {
@@ -29,45 +30,46 @@ export default function Clients() {
     closeModalAddCharges,
 
     refreshData,
-    handleUpdateData,
   } = useModalStates();
-
+  const { refreshTrigger, handleUpdateData } = useRefreshTrigger();
   return (
     <div className="clients-page">
       <SideBar />
       <div className="clients-page-content">
         <Header text={"Cobranças"} handleModalUserEdit={handleModaUserEdit} />
-        <ModalUserEditProvider
-          openModal={openModaUserEdit}
-          closedModal={setOpenModaUserEdit}
-          closedModalButton={closeModaUserEdit}
-        >
-          <ModalUserEdit />
-        </ModalUserEditProvider>
         <hr />
-        <ModalClientsAddProvider
-          openModal={openModalClientsAdd}
-          closedModal={setOpenModalClientsAdd}
-          closedModalButton={closeModalClientsAdd}
+        <ClientsContentProvider
+          refreshTrigger={refreshTrigger}
+          handleUpdateData={handleUpdateData}
         >
-          <ModalClientsAdd />
-        </ModalClientsAddProvider>
-        <ModalClientsAddChargesProvider
-          openModal={openModalAddCharges}
-          closedModal={setOpenModalAddCharges}
-          closedModalButton={closeModalAddCharges}
-          onUpdate={handleUpdateData}
-        >
-          <ModalClientsCharges />
-        </ModalClientsAddChargesProvider>
-
-        <ClientsContentProvider refreshTrigger={refreshData}>
           <ClientsContent
             openModalAddClient={handleModalClientsAdd}
             openModalAddCharges={handleModalAddCharges}
           />
         </ClientsContentProvider>
       </div>
+      <ModalClientsAddProvider
+        openModal={openModalClientsAdd}
+        closedModal={setOpenModalClientsAdd}
+        closedModalButton={closeModalClientsAdd}
+      >
+        <ModalClientsAdd />
+      </ModalClientsAddProvider>
+      <ModalClientsAddChargesProvider
+        openModal={openModalAddCharges}
+        closedModal={setOpenModalAddCharges}
+        closedModalButton={closeModalAddCharges}
+        onUpdate={handleUpdateData}
+      >
+        <ModalClientsCharges />
+      </ModalClientsAddChargesProvider>
+      <ModalUserEditProvider
+        openModal={openModaUserEdit}
+        closedModal={setOpenModaUserEdit}
+        closedModalButton={closeModaUserEdit}
+      >
+        <ModalUserEdit />
+      </ModalUserEditProvider>
     </div>
   );
 }

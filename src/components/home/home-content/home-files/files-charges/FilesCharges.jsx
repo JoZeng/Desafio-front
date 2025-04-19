@@ -12,13 +12,6 @@ export default function FilesCharges({
   valuechargesamount = [],
   button,
 }) {
-  const getClassName = () => {
-    if (type === "paid") return "charges-Paid";
-    if (type === "overdue") return "charges-Out-Of-Date";
-    if (type === "planned") return "charges-Planned";
-    return "";
-  };
-
   return (
     <div className="file-charges-content">
       <div className="file-title-card">

@@ -13,10 +13,10 @@ export default function ModalClientsEdit({}) {
     control,
     onSubmit,
     errors,
+    errorMessage,
     isSubmitting,
     isSubmittedSuccessfully,
     openModalSucess,
-    errorMessage,
   } = useModalClientsEdit();
 
   return (
@@ -38,11 +38,7 @@ export default function ModalClientsEdit({}) {
           }),
         }}
         firstType={"name"}
-        firstError={
-          errors.name && (
-            <span className="input-errors">{errors.name.message}</span>
-          )
-        }
+        firstError={errors.name?.message}
         secondLabel={"Email*"}
         secondClassName={errors.name ? "label-errors" : null}
         secondPlaceholder={"Digite seu email"}
@@ -52,10 +48,10 @@ export default function ModalClientsEdit({}) {
           }),
         }}
         secondType={"email"}
-        secondErrorError={
-          errors.email && (
-            <span className="input-errors">{errors.email.message}</span>
-          )
+        secondError={
+          <span className="input-errors">
+            {errors.email?.message || errorMessage.email}
+          </span>
         }
         null
         thirdLabel={"CPF*"}
@@ -74,19 +70,14 @@ export default function ModalClientsEdit({}) {
                   className="input"
                   placeholder="Digite seu CPF"
                   value={field.value}
-                  inputRef={(el) => {
-                    field.ref(el);
-                  }}
+                  onAccept={(value) => field.onChange(value)}
+                  inputRef={field.ref}
                 />
               )}
             />
           ),
         }}
-        thirdError={
-          errors.cpf && (
-            <span className="input-errors">{errors.cpf.message}</span>
-          )
-        }
+        thirdError={errors.cpf?.message || errorMessage.cpf}
         fourthLabel={"Telefone*"}
         fourthClassName={errors.phone ? "label-errors" : null}
         fourthPlaceholder={"Digite seu Telefone"}
@@ -100,16 +91,16 @@ export default function ModalClientsEdit({}) {
                 <IMaskInput
                   mask="00-00000.0000"
                   className="input"
-                  placeholder="Digite seu CPF"
+                  placeholder="Digite seu Telefone"
                   value={field.value}
-                  inputRef={(el) => {
-                    field.ref(el);
-                  }}
+                  onAccept={(value) => field.onChange(value)}
+                  inputRef={field.ref}
                 />
               )}
             />
           ),
         }}
+        fourthError={errors.phone?.message || errorMessage.phone}
         fifthLabel={"Endereço"}
         fifthClassName={errors.cpassword ? "label-errors" : null}
         fifthPlaceholder={"Digite o endereço"}
@@ -144,13 +135,12 @@ export default function ModalClientsEdit({}) {
               control={control}
               render={({ field }) => (
                 <IMaskInput
-                  mask="000.000.000-00"
+                  mask="00000-000"
                   className="input"
-                  placeholder="Digite seu CPF"
+                  placeholder="Digite seu CEP"
+                  onAccept={(value) => field.onChange(value)}
                   value={field.value}
-                  inputRef={(el) => {
-                    field.ref(el);
-                  }}
+                  inputRef={field.ref}
                 />
               )}
             />
@@ -200,9 +190,8 @@ export default function ModalClientsEdit({}) {
                   mask="aa"
                   className="input"
                   placeholder="Digite seu UF"
-                  inputRef={(el) => {
-                    field.ref(el);
-                  }}
+                  onAccept={(value) => field.onChange(value)}
+                  inputRef={field.ref}
                 />
               )}
             />

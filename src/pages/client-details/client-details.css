@@ -1,6 +1,15 @@
-.client-details-content {
+.clients-page {
+  display: flex;
+  height: 100vh; /* OCUPE A TELA TODA */
+  overflow: hidden; /* Não deixa vazar conteúdo desnecessário */
+}
+
+.clients-page-content {
   display: flex;
   flex-direction: column;
+  flex: 1;
+  padding: 24px;
+  overflow-y: auto; /* Scroll interno só aqui */
 }
 
 .client-details-content-header {

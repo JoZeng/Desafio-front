@@ -12,7 +12,11 @@ import api from "../../../../services/api";
 
 export const ClientsContentContext = createContext();
 
-export const ClientsContentProvider = ({ children, refreshTrigger }) => {
+export const ClientsContentProvider = ({
+  children,
+  refreshTrigger,
+  handleUpdateData,
+}) => {
   const [clients, setClients] = useState([]);
   const [search, setSearch] = useState("");
   const [paginaAtual, setPaginaAtual] = useState(1);
@@ -89,20 +93,20 @@ export const ClientsContentProvider = ({ children, refreshTrigger }) => {
     } finally {
       setLoading(false);
     }
-  }, []); // "[]": A função `fetchClients` só será criada uma vez.
+  }, []);
 
   useEffect(() => {
     if (search.trim() === "") {
       fetchClients(paginaAtual);
     }
-  }, [search, paginaAtual, fetchClients]); // `fetchClients` é estável aqui, pois é memorada com `useCallback`.
+  }, [search, paginaAtual, fetchClients]);
 
   useEffect(() => {
     if (refreshTrigger !== lastRefresh.current) {
       lastRefresh.current = refreshTrigger;
       fetchClients();
     }
-  }, [refreshTrigger, fetchClients]); // `fetchClients` agora é estável e não será recriada
+  }, [refreshTrigger, fetchClients]);
 
   return (
     <ClientsContentContext.Provider
@@ -115,6 +119,7 @@ export const ClientsContentProvider = ({ children, refreshTrigger }) => {
         setPaginaAtual,
         totalPaginas,
         loading,
+        handleUpdateData,
       }}
     >
       {children}

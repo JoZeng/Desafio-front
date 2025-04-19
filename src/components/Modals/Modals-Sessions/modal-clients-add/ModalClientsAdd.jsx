@@ -1,5 +1,5 @@
 import ModalContent from "../ModalContent";
-import { useModalClientsCharges } from "./ModalClientsAddContext";
+import { useModalClientsAdd } from "./ModalClientsAddContext";
 import { Controller } from "react-hook-form";
 import { IMaskInput } from "react-imask";
 
@@ -8,21 +8,23 @@ export default function ModalClientsAdd() {
     openModal,
     closedModal,
     closedModalButton,
-    openModalSucess,
     register,
-    control,
     handleSubmit,
+    control,
     onSubmit,
-    errorMessage,
     errors,
-  } = useModalClientsCharges();
+    errorMessage,
+    isSubmitting,
+    isSubmittedSuccessfully,
+    openModalSucess,
+  } = useModalClientsAdd();
 
   return (
     <div>
       <ModalContent
-        openModalClientAdd={openModal}
-        closedModalButton={closedModalButton}
+        openModalClientEdit={openModal}
         closedModal={closedModal}
+        closedModalButton={closedModalButton}
         openModalSucess={openModalSucess}
         messageSucess={"Cadastro Alterado com sucesso!"}
         headerModalText={"Adicionar Cliente"}
@@ -36,11 +38,7 @@ export default function ModalClientsAdd() {
           }),
         }}
         firstType={"name"}
-        firstError={
-          errors.name && (
-            <span className="input-errors">{errors.name.message}</span>
-          )
-        }
+        firstError={errors.name?.message}
         secondLabel={"Email*"}
         secondClassName={errors.name ? "label-errors" : null}
         secondPlaceholder={"Digite seu email"}
@@ -51,12 +49,11 @@ export default function ModalClientsAdd() {
         }}
         secondType={"email"}
         secondError={
-          errors.email ? (
-            <span className="input-errors">{errors.email.message}</span>
-          ) : errorMessage.email ? (
-            <span className="input-errors">{errorMessage.email}</span>
-          ) : null
+          <span className="input-errors">
+            {errors.email?.message || errorMessage.email}
+          </span>
         }
+        null
         thirdLabel={"CPF*"}
         thirdClassName={errors.cpf ? "label-errors" : null}
         thirdPlaceholder={"Digite seu CPF"}
@@ -72,16 +69,15 @@ export default function ModalClientsAdd() {
                   mask="000.000.000-00"
                   className="input"
                   placeholder="Digite seu CPF"
+                  value={field.value}
+                  onAccept={(value) => field.onChange(value)}
+                  inputRef={field.ref}
                 />
               )}
             />
           ),
         }}
-        thirdError={
-          errors.cpf && (
-            <span className="input-errors">{errors.cpf.message}</span>
-          )
-        }
+        thirdError={errors.cpf?.message || errorMessage.cpf}
         fourthLabel={"Telefone*"}
         fourthClassName={errors.phone ? "label-errors" : null}
         fourthPlaceholder={"Digite seu Telefone"}
@@ -93,25 +89,28 @@ export default function ModalClientsAdd() {
               control={control}
               render={({ field }) => (
                 <IMaskInput
-                  {...field}
                   mask="00-00000.0000"
                   className="input"
                   placeholder="Digite seu Telefone"
+                  value={field.value}
+                  onAccept={(value) => field.onChange(value)}
+                  inputRef={field.ref}
                 />
               )}
             />
           ),
         }}
+        fourthError={errors.phone?.message || errorMessage.phone}
         fifthLabel={"Endereço"}
         fifthClassName={errors.cpassword ? "label-errors" : null}
         fifthPlaceholder={"Digite o endereço"}
         fifthInputProps={{
-          ...register("adress", {}),
+          ...register("address", {}),
         }}
-        fifthType={"adress"}
+        fifthType={"address"}
         fifthError={
-          errors.adress && (
-            <span className="input-errors">{errors.adress.message}</span>
+          errors.address && (
+            <span className="input-errors">{errors.address.message}</span>
           )
         }
         sixthLabel={"Complemento"}
@@ -120,7 +119,7 @@ export default function ModalClientsAdd() {
         sixthInputProps={{
           ...register("complement", {}),
         }}
-        sixthType={"number"}
+        sixthType={"text"}
         sixthError={
           errors.complement && (
             <span className="input-errors">{errors.complement.message}</span>
@@ -132,14 +131,16 @@ export default function ModalClientsAdd() {
         seventhInputProps={{
           children: (
             <Controller
-              name="uf"
+              name="cep"
               control={control}
               render={({ field }) => (
                 <IMaskInput
-                  {...field}
-                  mask="000000-000"
+                  mask="00000-000"
                   className="input"
                   placeholder="Digite seu CEP"
+                  onAccept={(value) => field.onChange(value)}
+                  value={field.value}
+                  inputRef={field.ref}
                 />
               )}
             />
@@ -147,20 +148,20 @@ export default function ModalClientsAdd() {
         }}
         seventhType={"number"}
         seventhError={
-          errors.complement && (
-            <span className="input-errors">{errors.complement.message}</span>
+          errors.cep && (
+            <span className="input-errors">{errors.cep.message}</span>
           )
         }
         eighthLabel={"Bairro"}
-        eighthClassName={errors.complement ? "label-errors" : null}
+        eighthClassName={errors.neighborhood ? "label-errors" : null}
         eighthPlaceholder={"Digite o bairro"}
         eighthInputProps={{
           ...register("neighborhood", {}),
         }}
         eighthType={"name"}
         eighthError={
-          errors.complement && (
-            <span className="input-errors">{errors.complement.message}</span>
+          errors.neighborhood && (
+            <span className="input-errors">{errors.neighborhood.message}</span>
           )
         }
         ninthLabel={"Cidade"}
@@ -171,8 +172,8 @@ export default function ModalClientsAdd() {
         }}
         ninthType={"name"}
         ninthError={
-          errors.complement && (
-            <span className="input-errors">{errors.complement.message}</span>
+          errors.city && (
+            <span className="input-errors">{errors.city.message}</span>
           )
         }
         tenthLabel={"UF"}
@@ -189,6 +190,8 @@ export default function ModalClientsAdd() {
                   mask="aa"
                   className="input"
                   placeholder="Digite seu UF"
+                  onAccept={(value) => field.onChange(value)}
+                  inputRef={field.ref}
                 />
               )}
             />
@@ -196,11 +199,11 @@ export default function ModalClientsAdd() {
         }}
         tenthType={"name"}
         tenthError={
-          errors.complement && (
-            <span className="input-errors">{errors.complement.message}</span>
-          )
+          errors.uf && <span className="input-errors">{errors.uf.message}</span>
         }
         buttonText={"Aplicar"}
+        isSubmitting={isSubmitting}
+        isSubmittedSuccessfully={isSubmittedSuccessfully}
       />
     </div>
   );

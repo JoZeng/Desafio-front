@@ -1,4 +1,5 @@
 import { useForm } from "react-hook-form";
+import { toast } from "react-toastify";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { useState, useEffect, createContext, useContext } from "react";
@@ -6,108 +7,112 @@ import { getItem } from "../../../../utils/storage";
 import api from "../../../../services/api";
 
 export const ModalClientsAddContext = createContext();
+
+const schema = yup.object().shape({
+  name: yup.string().required("Campo obrigatório"),
+  email: yup.string().required("Campo obrigatório"),
+  cpf: yup
+    .string()
+    .required("Campo obrigatório")
+    .test("cpf-length", "CPF deve conter 11 dígitos", (value) =>
+      value ? value.replace(/\D/g, "").length === 11 : false
+    ),
+  phone: yup
+    .string()
+    .required("Campo obrigatório")
+    .test("phone-length", "Telefone deve conter 11 dígitos", (value) =>
+      value ? value.replace(/\D/g, "").length === 11 : false
+    ),
+  cep: yup.string().test("cep-length", "CEP deve conter 8 dígitos", (value) => {
+    if (!value) return true;
+    return value.replace(/\D/g, "").length === 8;
+  }),
+});
+
 export const ModalClientsAddProvider = ({
   children,
   openModal,
   closedModal,
   closedModalButton,
 }) => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [openModalSucess, setOpenModalSucess] = useState(false);
-  const token = getItem("token");
   const [errorMessage, setErrorMessage] = useState({
     email: "",
-    cpassword: "",
     cpf: "",
     phone: "",
   });
 
-  const schema = yup
-    .object()
-    .shape({
-      name: yup.string().required("Campo obrigátorio"),
-      email: yup.string().required("Campo obrigátorio"),
-      cpf: yup
-        .string()
-        .matches(/^\d{3}\.\d{3}\.\d{3}-\d{2}$/, "CPF inválido")
-        .required("Campo obrigatório"),
-      phone: yup
-        .string()
-        .matches(/^\d{3}\.\d{3}\.\d{3}-\d{2}$/, "Telefone inválido")
-        .required("Campo obrigatório"),
-    })
-    .required();
+  const token = getItem("token");
 
   const {
     register,
     handleSubmit,
     control,
+    watch,
     formState: { errors },
     reset,
   } = useForm({
+    mode: "onTouched",
     resolver: yupResolver(schema),
   });
 
+  // Limpa erros personalizados ao digitar novamente
+  const [cpf, email, phone] = watch(["cpf", "email", "phone"]);
   useEffect(() => {
-    if (openModalSucess) {
-      const timer = setTimeout(() => {
-        setOpenModalSucess(false);
-        closedModal();
-      }, 3000);
+    setErrorMessage({ email: "", cpf: "", phone: "" });
+  }, [cpf, email, phone]);
 
-      return () => clearTimeout(timer);
+  // Reset ao abrir o modal
+  useEffect(() => {
+    if (openModal) {
+      reset();
+      setErrorMessage({ email: "", cpf: "", phone: "" });
     }
-  }, [openModalSucess, closedModal]);
+  }, [openModal, reset]);
 
-  async function onSubmit(data) {
-    setErrorMessage({ email: "", cpassword: "", cpf: "", phone: "" });
+  const onSubmit = async (data) => {
+    if (isSubmitting || !token) return;
+
+    setIsSubmitting(true);
+
+    const formData = {
+      nome: data.name.trim(),
+      email: data.email.trim(),
+      cpf: data.cpf?.replace(/\D/g, "") || "",
+      telefone: data.phone?.replace(/\D/g, "") || "",
+      cep: data.cep?.replace(/\D/g, "") || "",
+      endereco: data.address?.trim() || "",
+      complemento: data.complement?.trim() || "",
+      bairro: data.neighborhood?.trim() || "",
+      cidade: data.city?.trim() || "",
+      estado: data.uf?.trim().toUpperCase() || "",
+    };
 
     try {
-      if (!token) {
-        console.error("Token não encontrado!");
-        return;
-      }
-      console.log("erro 1");
-      const response = await api.post(
-        "/clientes",
-        {
-          nome: data.name,
-          email: data.email,
-          cpf: data.cpf,
-          telefone: data.phone,
-          cep: data.cep,
-          endereco: data.adress,
-          complemento: data.complement,
-          bairro: data.neighborhood,
-          cidade: data.city,
-          estado: data.uf,
-        },
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
-      console.log("erro 2");
-      if (response.status >= 200 && response.status < 300) {
-        console.log("Cadastro do cliente feito com sucesso!");
+      const response = await api.post("/clientes", formData, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
 
-        reset({
-          name: data.name,
-          email: data.email,
-          cpf: data.cpf,
-          telefone: data.phone,
-          endereco: data.adress,
-          complemento: data.complement,
-          cep: data.cep,
-          bairro: data.neighborhood,
-          cidade: data.city,
-          estado: data.uf,
-        });
+      if (response.status >= 200 && response.status < 300) {
+        setOpenModalSucess(true);
+        reset();
+        setTimeout(() => {
+          setOpenModalSucess(false);
+          closedModal();
+          toast.success("Cliente adicionado com sucesso!");
+        }, 3000);
       }
     } catch (error) {
-      if (error.response) {
-        console.error(error.response.data);
-      }
+      setErrorMessage({
+        email: error.response?.data?.email || "",
+        cpf: error.response?.data?.cpf || "",
+        phone: error.response?.data?.telefone || "",
+      });
+    } finally {
+      setIsSubmitting(false);
     }
-  }
+  };
 
   return (
     <ModalClientsAddContext.Provider
@@ -115,14 +120,14 @@ export const ModalClientsAddProvider = ({
         openModal,
         closedModal,
         closedModalButton,
-        openModalSucess,
-        closedModal,
         register,
-        control,
         handleSubmit,
+        control,
         onSubmit,
-        errorMessage,
         errors,
+        isSubmitting,
+        errorMessage,
+        openModalSucess,
       }}
     >
       {children}
@@ -130,7 +135,4 @@ export const ModalClientsAddProvider = ({
   );
 };
 
-export const useModalClientsCharges = () => {
-  const context = useContext(ModalClientsAddContext);
-  return context;
-};
+export const useModalClientsAdd = () => useContext(ModalClientsAddContext);

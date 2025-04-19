@@ -17,3 +17,7 @@
 .home-files-major > * {
   flex: 1;
 }
+
+.home-files-major {
+  padding-bottom: 30px;
+}

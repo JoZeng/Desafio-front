@@ -17,10 +17,12 @@ export const ModalClientsAddChargesProvider = ({
   const [isSubmittedSuccessfully, setIsSubmittedSuccessfully] = useState(false);
   const [openModalSucess, setOpenModalSucess] = useState(false);
   const clientName = getItem("clientName");
+
   const {
     register,
     handleSubmit,
     reset,
+    control,
     formState: { errors },
   } = useForm({
     mode: "onBlur",
@@ -47,18 +49,18 @@ export const ModalClientsAddChargesProvider = ({
     }
   }, [isSubmittedSuccessfully]);
 
-  async function onSubmit(data) {
+  const onSubmit = async (data) => {
     if (isSubmitting || isSubmittedSuccessfully) return;
 
     const token = getItem("token");
 
+    if (!token) {
+      console.error("Token não encontrado!");
+      return;
+    }
+
     try {
       setIsSubmitting(true);
-
-      if (!token) {
-        console.error("Token não encontrado!");
-        return;
-      }
 
       const response = await api.post(
         "/clientes/cobrancas",
@@ -83,7 +85,7 @@ export const ModalClientsAddChargesProvider = ({
         });
 
         setOpenModalSucess(true);
-        setIsSubmittedSuccessfully(true); 
+        setIsSubmittedSuccessfully(true);
         if (onUpdate) onUpdate();
       }
     } catch (error) {
@@ -91,7 +93,7 @@ export const ModalClientsAddChargesProvider = ({
     } finally {
       setIsSubmitting(false);
     }
-  }
+  };
 
   return (
     <ModalClientsAddChargesContext.Provider
@@ -102,6 +104,7 @@ export const ModalClientsAddChargesProvider = ({
         register,
         handleSubmit,
         onSubmit,
+        control,
         clientName,
         errors,
         isSubmitting,
@@ -114,6 +117,5 @@ export const ModalClientsAddChargesProvider = ({
 };
 
 export const useModalClientsAddCharges = () => {
-  const context = useContext(ModalClientsAddChargesContext);
-  return context;
+  return useContext(ModalClientsAddChargesContext);
 };

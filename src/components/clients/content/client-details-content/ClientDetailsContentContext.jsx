@@ -1,5 +1,3 @@
-// src/components/clients/content/client-details-content/ClientDetailsContentContext.jsx
-
 import {
   createContext,
   useState,
@@ -89,7 +87,7 @@ export const ClientDetailsContentContextProvider = ({
   );
 };
 
-export const useClientContentDetailsContext = () => {
+export const useClientDetailsContentContext = () => {
   const context = useContext(ClientDetailsContentContext);
   if (!context) {
     throw new Error(

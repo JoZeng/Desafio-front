@@ -3,130 +3,74 @@ import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import api from "../../../../services/api";
 import { useForm } from "react-hook-form";
+import api from "../../../../services/api";
 import { getItem } from "../../../../utils/storage";
 
 export const ModalClientsEditContext = createContext();
+
+const schema = yup.object().shape({
+  name: yup.string().required("Campo obrigatório"),
+  email: yup.string().required("Campo obrigatório"),
+  cpf: yup
+    .string()
+    .required("Campo obrigatório")
+    .test("cpf-length", "CPF deve conter 11 dígitos", (value) =>
+      value ? value.replace(/\D/g, "").length === 11 : false
+    ),
+  phone: yup
+    .string()
+    .required("Campo obrigatório")
+    .test("phone-length", "Telefone deve conter 11 dígitos", (value) =>
+      value ? value.replace(/\D/g, "").length === 11 : false
+    ),
+  cep: yup.string().test("cep-length", "CEP deve conter 8 dígitos", (value) => {
+    if (!value) return true;
+    return value.replace(/\D/g, "").length === 8;
+  }),
+});
 
 export const ModalClientsEditProvider = ({
   children,
   openModal,
   closedModal,
   closedModalButton,
-  onUpdate, // Função que atualiza os dados no contexto do componente pai
+  onUpdate,
 }) => {
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isSubmittedSuccessfully, setIsSubmittedSuccessfully] = useState(false);
-  const [openModalSucess, setOpenModalSucess] = useState(false);
-  const token = getItem("token");
   const { id } = useParams();
+  const token = getItem("token");
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [openModalSucess, setOpenModalSucess] = useState(false);
   const [errorMessage, setErrorMessage] = useState({
     email: "",
-    cpassword: "",
     cpf: "",
     phone: "",
   });
-
-  const schema = yup
-    .object()
-    .shape({
-      name: yup.string().required("Campo obrigatório"),
-      email: yup.string().required("Campo obrigatório"),
-      cpf: yup.string().required("Campo obrigatório"),
-      phone: yup.string().required("Campo obrigatório"),
-    })
-    .required();
 
   const {
     register,
     handleSubmit,
     control,
+    watch,
     formState: { errors },
     reset,
   } = useForm({
-    mode: "onBlur",
+    mode: "onTouched",
     resolver: yupResolver(schema),
   });
 
+  const [cpf, email, phone] = watch(["cpf", "email", "phone"]);
   useEffect(() => {
-    if (openModalSucess) {
-      const timer = setTimeout(() => {
-        setOpenModalSucess(false); // Fecha o modal após 3 segundos
-        setIsSubmittedSuccessfully(false); // Reseta o estado de sucesso
-        closedModal(); // Fecha o modal
-      }, 3000); // 3 segundos
-
-      return () => clearTimeout(timer);
-    }
-  }, [openModalSucess, closedModal]);
-
-  useEffect(() => {
-    if (isSubmittedSuccessfully) {
-      toast.success("Editado com sucesso!"); // Exibe o toast de sucesso
-    }
-  }, [isSubmittedSuccessfully]);
-
-  async function onSubmit(data) {
-    console.log("Enviando dados...", data);
-
-    if (isSubmitting || isSubmittedSuccessfully) return;
-
-    try {
-      if (!token) {
-        console.error("Token não encontrado!");
-        return;
-      }
-
-      const response = await api.put(
-        `/clientes/${id}`,
-        {
-          nome: data.name,
-          email: data.email,
-          cpf: data.cpf,
-          telefone: data.phone,
-          cep: data.cep,
-          endereco: data.address,
-          complemento: data.complement,
-          bairro: data.neighborhood,
-          cidade: data.city,
-          estado: data.uf,
-        },
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
-
-      if (response.status >= 200 && response.status < 300) {
-        console.log("Atualização do cliente feita com sucesso!");
-        setOpenModalSucess(true); // Marca o sucesso
-        setIsSubmittedSuccessfully(true); // Define como sucesso
-        if (onUpdate) onUpdate(response.data.cliente); // Atualiza os dados no contexto ou componente pai com os dados atualizados
-      }
-      setOpenModalSucess(true);
-      setIsSubmittedSuccessfully(true);
-    } catch (error) {
-      console.error("Erro ao atualizar:", error);
-      setErrorMessage({
-        email: "Erro no email",
-        cpassword: "Erro na senha",
-        cpf: "Erro no CPF",
-        phone: "Erro no telefone",
-      });
-    } finally {
-      setIsSubmitting(false);
-    }
-  }
+    setErrorMessage({ email: "", cpf: "", phone: "" });
+  }, [cpf, email, phone]);
 
   useEffect(() => {
     if (openModal && id) {
-      async function fetchUserData() {
-        const token = getItem("token");
+      (async () => {
         try {
-          const response = await api.get(`/clientes/${id}`, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
+          const { data } = await api.get(`/clientes/${id}`, {
+            headers: { Authorization: `Bearer ${token}` },
           });
 
           const {
@@ -140,31 +84,70 @@ export const ModalClientsEditProvider = ({
             bairro,
             cidade,
             estado,
-          } = response.data.cliente;
+          } = data.cliente;
 
           reset({
             name: nome,
-            email: email,
-            cpf: cpf,
-            phone: telefone,
-            address: endereco,
-            complement: complemento,
-            cep: cep,
-            neighborhood: bairro,
-            city: cidade,
-            uf: estado,
+            email,
+            cpf: cpf?.replace(/\D/g, "") || "",
+            phone: telefone?.replace(/\D/g, "") || "",
+            cep: cep?.replace(/\D/g, "") || "",
+            address: endereco || "",
+            complement: complemento || "",
+            neighborhood: bairro || "",
+            city: cidade || "",
+            uf: estado || "",
           });
         } catch (error) {
-          console.error(
-            "Erro ao buscar dados do usuário:",
-            error.response?.data || error.message
-          );
+          toast.error("Erro ao carregar dados do cliente.");
+          console.error(error.response?.data || error.message);
         }
-      }
-
-      fetchUserData();
+      })();
     }
-  }, [openModal, reset, token]);
+  }, [openModal, id, reset, token]);
+
+  const onSubmit = async (data) => {
+    if (isSubmitting || !token) return;
+
+    setIsSubmitting(true);
+
+    const formData = {
+      nome: data.name.trim(),
+      email: data.email.trim(),
+      cpf: data.cpf?.replace(/\D/g, "") || "",
+      telefone: data.phone?.replace(/\D/g, "") || "",
+      cep: data.cep?.replace(/\D/g, "") || "",
+      endereco: data.address?.trim() || "",
+      complemento: data.complement?.trim() || "",
+      bairro: data.neighborhood?.trim() || "",
+      cidade: data.city?.trim() || "",
+      estado: data.uf?.trim().toUpperCase() || "",
+    };
+
+    try {
+      const response = await api.put(`/clientes/${id}`, formData, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      if (response.status >= 200 && response.status < 300) {
+        setOpenModalSucess(true);
+        toast.success("Cliente editado com sucesso!");
+        if (onUpdate) onUpdate(response.data.cliente);
+        setTimeout(() => {
+          setOpenModalSucess(false);
+          closedModal();
+        }, 3000);
+      }
+    } catch (error) {
+      setErrorMessage({
+        email: error.response?.data?.email || "",
+        cpf: error.response?.data?.cpf || "",
+        phone: error.response?.data?.telefone || "",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <ModalClientsEditContext.Provider
@@ -178,7 +161,6 @@ export const ModalClientsEditProvider = ({
         onSubmit,
         errors,
         isSubmitting,
-        isSubmittedSuccessfully,
         errorMessage,
         openModalSucess,
         id,
@@ -189,7 +171,4 @@ export const ModalClientsEditProvider = ({
   );
 };
 
-export const useModalClientsEdit = () => {
-  const context = useContext(ModalClientsEditContext);
-  return context;
-};
+export const useModalClientsEdit = () => useContext(ModalClientsEditContext);

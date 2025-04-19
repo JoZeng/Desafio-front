@@ -159,8 +159,8 @@ export default function ModalContent({
                     {...firstInputProps}
                     type={firstType}
                     placeholder={firstPlaceholder}
-                  />
-                  {firstError}
+                  />{" "}
+                  <span className="input-errors">{firstError}</span>
                 </div>
                 <div className="inputs-modal-edituser">
                   <label>{secondLabel}</label>
@@ -170,7 +170,7 @@ export default function ModalContent({
                     type={secondType}
                     placeholder={secondPlaceholder}
                   />
-                  {secondError}
+                  <span className="input-errors">{secondError}</span>
                 </div>
 
                 <div className="inputs-minors-modal-edituser">
@@ -186,7 +186,7 @@ export default function ModalContent({
                         placeholder={thirdPlaceholder}
                       />
                     )}
-                    {thirdError}
+                    <span className="input-errors">{thirdError}</span>
                   </div>
                   <div className="input-minor-modal-edituser">
                     <label>{fourthLabel}</label>
@@ -200,7 +200,7 @@ export default function ModalContent({
                         placeholder={fourthPlaceholder}
                       />
                     )}
-                    {fourthError}
+                    <span className="input-errors">{fourthError}</span>
                   </div>
                 </div>
 
@@ -212,7 +212,7 @@ export default function ModalContent({
                     placeholder={fifthPlaceholder}
                     type={fifthType}
                   />
-                  {fifthError}
+                  <span className="input-errors">{fifthError}</span>
                 </div>
 
                 <div className="inputs-modal-edituser">
@@ -224,7 +224,7 @@ export default function ModalContent({
                     type={sixthType}
                   />
                 </div>
-                {sixthError}
+                <span className="input-errors">{sixthError}</span>
                 {(openModalClientAdd || openModalClientEdit) && (
                   <>
                     <div className="inputs-minors-modal-edituser">
@@ -240,7 +240,7 @@ export default function ModalContent({
                             placeholder={seventhPlaceholder}
                           />
                         )}
-                        {seventhError}
+                        <span className="input-errors">{seventhError}</span>
                       </div>
                       <div className="input-minor-modal-edituser">
                         <label>{eighthLabel}</label>
@@ -250,7 +250,7 @@ export default function ModalContent({
                           type={eighthType}
                           placeholder={eighthPlaceholder}
                         />
-                        {eighthError}
+                        <span className="input-errors">{eighthError}</span>
                       </div>
                     </div>
                     <div className="inputs-minors-modal-edituser-second">
@@ -262,7 +262,7 @@ export default function ModalContent({
                           type={ninthType}
                           placeholder={ninthPlaceholder}
                         />
-                        {ninthError}
+                        <span className="input-errors">{ninthError}</span>
                       </div>
                       <div className="input-minor-modal-edituser-uf">
                         <label>{tenthLabel}</label>
@@ -276,7 +276,7 @@ export default function ModalContent({
                             placeholder={tenthPlaceholder}
                           />
                         )}
-                        {tenthError}
+                        <span className="input-errors">{tenthError}</span>
                       </div>
                     </div>
                   </>
@@ -315,7 +315,7 @@ export default function ModalContent({
                     value={eleventhValue}
                     readOnly
                   />
-                  {eleventhError}
+                  <span className="input-errors">{eleventhError}</span>
                 </div>
                 <div className="inputs-modal-edituser">
                   <label>{twelfthLabel}</label>
@@ -325,7 +325,7 @@ export default function ModalContent({
                     type={twelfthType}
                     placeholder={twelfthPlaceholder}
                   />
-                  {twelfthError}
+                  <span className="input-errors">{twelfthError}</span>
                 </div>
                 <div className="inputs-minors-modal-edituser">
                   <div className="input-minor-modal-edituser">
@@ -340,17 +340,21 @@ export default function ModalContent({
                         placeholder={thirteenthPlaceholder}
                       />
                     )}
-                    {thirteenthError}
+                    <span className="input-errors">{thirteenthError}</span>
                   </div>
                   <div className="input-minor-modal-edituser">
                     <label>{fourteenthLabel}</label>
-                    <input
-                      className={fourteenthClassName}
-                      {...fourteenthInputProps}
-                      type={fourteenthType}
-                      placeholder={fourteenthPlaceholder}
-                    />
-                    {fourteenthError}
+                    {fourteenthInputProps?.children ? (
+                      fourteenthInputProps.children
+                    ) : (
+                      <input
+                        className={fourteenthClassName}
+                        {...fourteenthInputProps}
+                        type={fourteenthType}
+                        placeholder={fourteenthPlaceholder}
+                      />
+                    )}
+                    <span className="input-errors">{fourteenthError}</span>
                   </div>
                 </div>
                 <div className="inputs-modal-form-radios">
